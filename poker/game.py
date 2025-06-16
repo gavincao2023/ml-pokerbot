@@ -71,10 +71,12 @@ class HeadsUpGame:
             The action character (``"y"`` or ``"n"``) and the numeric amount. If
             parsing fails, the amount defaults to 0 so the caller will fold.
         """
+
         parts = s.strip().lower().split()
         if not parts:
             return 'n', 0
         action = parts[0]
+
         try:
             amount = int(parts[1]) if len(parts) > 1 else 0
         except ValueError:
@@ -138,6 +140,7 @@ class HeadsUpGame:
                     print(f"{player.name} folds. {self.players[1 - to_act].name} wins {self.pot}")
                     self.players[1 - to_act].stack += self.pot
                     return True
+
 
         print(f"Pot is now {self.pot}")
         return False
