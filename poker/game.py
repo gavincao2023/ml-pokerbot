@@ -57,6 +57,7 @@ class HeadsUpGame:
         return winners, evaluations
 
     # --- Betting logic ---
+ codex/create-heads-up-poker-game-logic
     def _parse_action(self, s: str):
         parts = s.strip().lower().split()
         if not parts:
@@ -65,10 +66,12 @@ class HeadsUpGame:
         amount = int(parts[1]) if len(parts) > 1 else 0
         return action, amount
 
+
     def betting_round(self, stage: str, input_fn=input) -> bool:
         """Return True if the hand ended due to a fold."""
         print(f"\n== {stage} Betting ==")
         bettor, caller = self.players
+ codex/create-heads-up-poker-game-logic
 
         response = input_fn(f"{bettor.name} bet? (y/n amount) ")
         action, amount = self._parse_action(response)
@@ -80,6 +83,7 @@ class HeadsUpGame:
             action, amount = self._parse_action(response)
             if action == 'y':
                 call = caller.bet(amount)
+
                 self.pot += call
                 print(f"{caller.name} calls {call}. Stack: {caller.stack}")
             else:
@@ -87,6 +91,7 @@ class HeadsUpGame:
                 bettor.stack += self.pot
                 return True
         else:
+ codex/create-heads-up-poker-game-logic
             response = input_fn(f"{caller.name} bet? (y/n amount) ")
             action, amount = self._parse_action(response)
             if action == 'y' and amount > 0:
@@ -97,6 +102,7 @@ class HeadsUpGame:
                 action, amount = self._parse_action(response)
                 if action == 'y':
                     call = bettor.bet(amount)
+
                     self.pot += call
                     print(f"{bettor.name} calls {call}. Stack: {bettor.stack}")
                 else:

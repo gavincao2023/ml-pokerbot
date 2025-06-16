@@ -13,8 +13,7 @@ python play_heads_up.py
 ```
 
 The script will walk through betting on the pre-flop, flop, turn and river rounds,
-prompting each player to bet or call by answering `y` or `n` followed by the
-amount (e.g. `y 25`). Stacks and the
 pot are updated after each action and the winner of the pot is announced at the
 end of the hand. This implementation can serve as a starting point for
 machine-learning experiments or further game logic.
+Input: (y/n) amount
