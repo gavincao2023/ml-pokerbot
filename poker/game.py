@@ -57,37 +57,57 @@ class HeadsUpGame:
         return winners, evaluations
 
     # --- Betting logic ---
- codex/create-heads-up-poker-game-logic
-    def _parse_action(self, s: str):
-        parts = s.strip().lower().split()
-        if not parts:
-            return 'n', 0
-        action = parts[0]
-        amount = int(parts[1]) if len(parts) > 1 else 0
-        return action, amount
 
+        bets = [0, 0]
+        current_bet = 0
+        to_act = 0
+        checked = [False, False]
 
-    def betting_round(self, stage: str, input_fn=input) -> bool:
-        """Return True if the hand ended due to a fold."""
-        print(f"\n== {stage} Betting ==")
-        bettor, caller = self.players
- codex/create-heads-up-poker-game-logic
+        while True:
+            player = self.players[to_act]
+            to_call = current_bet - bets[to_act]
 
-        response = input_fn(f"{bettor.name} bet? (y/n amount) ")
-        action, amount = self._parse_action(response)
-        if action == 'y' and amount > 0:
-            bet = bettor.bet(amount)
-            self.pot += bet
-            print(f"{bettor.name} bets {bet}. Stack: {bettor.stack}")
-            response = input_fn(f"{caller.name} call? (y/n amount) ")
-            action, amount = self._parse_action(response)
-            if action == 'y':
-                call = caller.bet(amount)
+            if to_call <= 0:
+                # Player can check or bet
+                response = input_fn(f"{player.name} bet? (y/n amount) ")
+                action, amount = self._parse_action(response)
+                if action == 'y' and amount > 0:
+                    bet_amt = player.bet(amount)
+                    bets[to_act] += bet_amt
+                    current_bet = bets[to_act]
+                    self.pot += bet_amt
+                    checked[to_act] = False
+                    print(f"{player.name} bets {bet_amt}. Stack: {player.stack}")
+                    to_act = 1 - to_act
+                else:
+                    checked[to_act] = True
+                    print(f"{player.name} checks.")
+                    if checked[0] and checked[1]:
+                        break
+                    to_act = 1 - to_act
+                # Player must decide to call, raise, or fold
+                response = input_fn(f"{player.name} call {to_call}? (y/n amount) ")
+                if action == 'y' and amount >= to_call:
+                    call_amt = player.bet(to_call)
+                    bets[to_act] += call_amt
+                    self.pot += call_amt
+                    print(f"{player.name} calls {call_amt}. Stack: {player.stack}")
+                    if amount > to_call:
+                        # Raise
+                        raise_amt = amount - to_call
+                        extra = player.bet(raise_amt)
+                        bets[to_act] += extra
+                        current_bet = bets[to_act]
+                        self.pot += extra
+                        print(f"{player.name} raises {extra}. Stack: {player.stack}")
+                        checked[0] = checked[1] = False
+                        to_act = 1 - to_act
+                    else:
+                        break
+                    # Fold
+                    print(f"{player.name} folds. {self.players[1 - to_act].name} wins {self.pot}")
+                    self.players[1 - to_act].stack += self.pot
 
-                self.pot += call
-                print(f"{caller.name} calls {call}. Stack: {caller.stack}")
-            else:
-                print(f"{caller.name} folds. {bettor.name} wins {self.pot}")
                 bettor.stack += self.pot
                 return True
         else:
