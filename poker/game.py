@@ -57,20 +57,33 @@ class HeadsUpGame:
         return winners, evaluations
 
     # --- Betting logic ---
+ codex/create-heads-up-poker-game-logic
+    def _parse_action(self, s: str):
+        parts = s.strip().lower().split()
+        if not parts:
+            return 'n', 0
+        action = parts[0]
+        amount = int(parts[1]) if len(parts) > 1 else 0
+        return action, amount
+
+
     def betting_round(self, stage: str, input_fn=input) -> bool:
         """Return True if the hand ended due to a fold."""
         print(f"\n== {stage} Betting ==")
         bettor, caller = self.players
-        bet = 0
+ codex/create-heads-up-poker-game-logic
 
-        action = input_fn(f"{bettor.name} bet 10? (y/n) ").strip().lower()
-        if action == 'y':
-            bet = bettor.bet(10)
+        response = input_fn(f"{bettor.name} bet? (y/n amount) ")
+        action, amount = self._parse_action(response)
+        if action == 'y' and amount > 0:
+            bet = bettor.bet(amount)
             self.pot += bet
             print(f"{bettor.name} bets {bet}. Stack: {bettor.stack}")
-            action = input_fn(f"{caller.name} call 10? (y/n) ").strip().lower()
+            response = input_fn(f"{caller.name} call? (y/n amount) ")
+            action, amount = self._parse_action(response)
             if action == 'y':
-                call = caller.bet(10)
+                call = caller.bet(amount)
+
                 self.pot += call
                 print(f"{caller.name} calls {call}. Stack: {caller.stack}")
             else:
@@ -78,14 +91,18 @@ class HeadsUpGame:
                 bettor.stack += self.pot
                 return True
         else:
-            action = input_fn(f"{caller.name} bet 10? (y/n) ").strip().lower()
-            if action == 'y':
-                bet = caller.bet(10)
+ codex/create-heads-up-poker-game-logic
+            response = input_fn(f"{caller.name} bet? (y/n amount) ")
+            action, amount = self._parse_action(response)
+            if action == 'y' and amount > 0:
+                bet = caller.bet(amount)
                 self.pot += bet
                 print(f"{caller.name} bets {bet}. Stack: {caller.stack}")
-                action = input_fn(f"{bettor.name} call 10? (y/n) ").strip().lower()
+                response = input_fn(f"{bettor.name} call? (y/n amount) ")
+                action, amount = self._parse_action(response)
                 if action == 'y':
-                    call = bettor.bet(10)
+                    call = bettor.bet(amount)
+
                     self.pot += call
                     print(f"{bettor.name} calls {call}. Stack: {bettor.stack}")
                 else:
