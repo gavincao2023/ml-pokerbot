@@ -30,3 +30,4 @@ are not implemented.
 If a non-numeric amount is entered it is treated as zero which effectively folds the hand.
 
 Stacks and the pot update after each action and the winner of the pot is announced at the end of the hand. This implementation can serve as a starting point for machine-learning experiments or further game logic.
+Each showdown also prints a numeric score from **0.00** to **0.99** indicating the relative strength of every hand.

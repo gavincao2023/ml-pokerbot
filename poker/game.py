@@ -55,11 +55,11 @@ class HeadsUpGame:
         evaluations = []
         for p in self.players:
             hand = p.cards + self.board
-            result = evaluate_best(hand)
-            evaluations.append((p, result))
-        evaluations.sort(key=lambda x: x[1][1], reverse=True)
-        best_rank = evaluations[0][1][1]
-        winners = [p for p, res in evaluations if res[1] == best_rank]
+            name, rank, score = evaluate_best(hand)
+            evaluations.append((p, name, rank, score))
+        evaluations.sort(key=lambda x: x[2], reverse=True)
+        best_rank = evaluations[0][2]
+        winners = [p for p, _, r, _ in evaluations if r == best_rank]
         return winners, evaluations
 
     def post_blinds(self):
@@ -206,9 +206,10 @@ class HeadsUpGame:
 
         winners, evals = self.showdown()
         print("\n-- Showdown --")
-        for p, res in evals:
-            hand_name, rank = res
-            print(f"{p.name}: {hand_name} ({' '.join(str(c) for c in p.cards)})")
+        for p, name, rank, score in evals:
+            print(
+                f"{p.name}: {name} ({' '.join(str(c) for c in p.cards)}) - {score:.2f}"
+            )
         if len(winners) == 1:
             winner = winners[0]
             winner.stack += self.pot
