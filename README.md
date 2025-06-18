@@ -13,12 +13,15 @@ python play_heads_up.py
 ```
 
 The script will walk through betting on the pre-flop, flop, turn and river rounds.
+
 Each hand begins with automatic posting of the small and big blinds so the pot is
 seeded before any action. Blinds rotate each hand.
+
 When prompted, reply with `y` or `n` followed by the amount (e.g. `y 25`).
 Facing a bet you may:
 
 1. Enter `n` or an amount smaller than the required call to fold.
+
 2. Enter `y` or `y` with the exact call amount to call. If no amount is given, the
    required call will automatically be wagered for you.
 3. Enter `y` with a higher amount to raise, after which betting continues until a call or fold.
@@ -31,3 +34,4 @@ If a non-numeric amount is entered it is treated as zero which effectively folds
 
 Stacks and the pot update after each action and the winner of the pot is announced at the end of the hand. This implementation can serve as a starting point for machine-learning experiments or further game logic.
 Each showdown also prints a numeric score from **0.00** to **0.99** indicating the relative strength of every hand.
+

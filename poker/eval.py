@@ -67,6 +67,7 @@ def _rank_five(cards: List[Card]) -> Tuple:
     return (0,) + tuple(sorted(ranks, reverse=True))
 
 
+
 def _rank_value(rank: Tuple[int, ...]) -> float:
     """Return a numeric value for a rank tuple."""
     val = rank[0]
@@ -94,3 +95,4 @@ def evaluate_best(seven: List[Card]) -> Tuple[str, Tuple, float]:
             best_rank = rank
             best_name = HAND_RANKS[rank[0]]
     return best_name, best_rank, _score(best_value)
+
