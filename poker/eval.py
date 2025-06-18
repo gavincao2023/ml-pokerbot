@@ -67,10 +67,32 @@ def _rank_five(cards: List[Card]) -> Tuple:
     return (0,) + tuple(sorted(ranks, reverse=True))
 
 
-def evaluate_best(seven: List[Card]) -> Tuple[int, Tuple]:
-    best = (-1, ())
+
+def _rank_value(rank: Tuple[int, ...]) -> float:
+    """Return a numeric value for a rank tuple."""
+    val = rank[0]
+    for i, r in enumerate(rank[1:], 1):
+        val += r / (15 ** i)
+    return val
+
+
+def _score(value: float) -> float:
+    """Convert an absolute rank value to a 0-0.99 score."""
+    score = (value / 9) * 0.99
+    return round(score, 2)
+
+
+def evaluate_best(seven: List[Card]) -> Tuple[str, Tuple, float]:
+    """Return (hand name, rank tuple, normalized score)."""
+    best_value = -1.0
+    best_rank: Tuple[int, ...] = ()
+    best_name = ""
     for combo in combinations(seven, 5):
         rank = _rank_five(list(combo))
-        if rank > best[1]:
-            best = (HAND_RANKS[rank[0]], rank)
-    return best
+        value = _rank_value(rank)
+        if value > best_value:
+            best_value = value
+            best_rank = rank
+            best_name = HAND_RANKS[rank[0]]
+    return best_name, best_rank, _score(best_value)
+
